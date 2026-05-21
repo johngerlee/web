@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>廚餘分類王</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+        background: linear-gradient(180deg, #e8fff3, #fff7d6);
+        color: #2f3e2f;
+        text-align: center;
+    }
+
+    header {
+        background: linear-gradient(90deg, #39b36b, #80d66b);
+        color: white;
+        padding: 18px 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 34px;
+        letter-spacing: 2px;
+    }
+
+    header p {
+        margin: 8px 0 0;
+        font-size: 18px;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    .panel {
+        background: white;
+        border-radius: 24px;
+        padding: 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    .score-board {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+    }
+
+    .score-box {
+        background: #f1fff5;
+        border: 3px solid #b7e7b7;
+        border-radius: 18px;
+        padding: 12px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .score-box span {
+        display: block;
+        font-size: 28px;
+        color: #219653;
+        margin-top: 5px;
+    }
+
+    .game-area {
+        display: grid;
+        grid-template-columns: 1.2fr 1.8fr;
+        gap: 18px;
+        align-items: stretch;
+    }
+
+    .card {
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .food-emoji {
+        font-size: 90px;
+        margin-bottom: 10px;
+    }
+
+    .food-name {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .food-hint {
+        font-size: 18px;
+        color: #666;
+        min-height: 48px;
+    }
+
+    .step-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1f8a45;
+        margin-bottom: 12px;
+    }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-top: 12px;
+    }
+
+    button {
+        border: none;
+        border-radius: 18px;
+        padding: 18px 12px;
+        font-size: 22px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.15s;
+        box-shadow: 0 5px 0 rgba(0,0,0,0.15);
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.05);
+    }
+
+    button:active {
+        transform: translateY(3px);
+        box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+    }
+
+    .btn-green {
+        background: #61c96f;
+        color: white;
+    }
+
+    .btn-orange {
+        background: #ffb347;
+        color: white;
+    }
+
+    .btn-blue {
+        background: #5dade2;
+        color: white;
+    }
+
+    .btn-red {
+        background: #ff7675;
+        color: white;
+    }
+
+    .btn-gray {
+        background: #95a5a6;
+        color: white;
+    }
+
+    .btn-yellow {
+        background: #f7d154;
+        color: #4b3f00;
+    }
+
+    .message {
+        min-height: 74px;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 14px;
+        border-radius: 18px;
+        background: #fffde8;
+        border: 3px dashed #f1c40f;
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .progress-area {
+        margin-top: 10px;
+        text-align: left;
+    }
+
+    .progress-label {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    .progress-bar {
+        height: 22px;
+        background: #e5e5e5;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #43c56f, #ffd166);
+        transition: width 0.3s;
+    }
+
+    .knowledge {
+        text-align: left;
+        line-height: 1.8;
+        font-size: 18px;
+    }
+
+    .knowledge h2 {
+        color: #218c4c;
+        margin-top: 0;
+    }
+
+    .badge-area {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 12px;
+    }
+
+    .badge {
+        background: #f4f4f4;
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-size: 18px;
+        border: 2px solid #ddd;
+        opacity: 0.35;
+    }
+
+    .badge.active {
+        background: #fff3b0;
+        border-color: #f1c40f;
+        opacity: 1;
+        font-weight: bold;
+    }
+
+    .start-screen {
+        max-width: 850px;
+        margin: 30px auto;
+    }
+
+    .start-screen h2 {
+        font-size: 32px;
+        color: #218c4c;
+    }
+
+    .start-screen p {
+        font-size: 20px;
+        line-height: 1.8;
+    }
+
+    .ranking {
+        text-align: left;
+        font-size: 18px;
+    }
+
+    .ranking ol {
+        padding-left: 30px;
+    }
+
+    .ranking li {
+        margin: 8px 0;
+        font-weight: bold;
+    }
+
+    .mode-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .mode-card {
+        border: 3px solid #d9efd9;
+        border-radius: 18px;
+        padding: 14px;
+        background: #f8fff9;
+    }
+
+    .mode-card h3 {
+        margin: 0 0 8px;
+        color: #218c4c;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .shake {
+        animation: shake 0.35s;
+    }
+
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        50% { transform: translateX(8px); }
+        75% { transform: translateX(-8px); }
+        100% { transform: translateX(0); }
+    }
+
+    .pop {
+        animation: pop 0.35s;
+    }
+
+    @keyframes pop {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.12); }
+        100% { transform: scale(1); }
+    }
+
+    @media (max-width: 850px) {
+        header h1 {
+            font-size: 26px;
+        }
+
+        .score-board {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .game-area {
+            grid-template-columns: 1fr;
+        }
+
+        .buttons {
+            grid-template-columns: 1fr;
+        }
+
+        .mode-row {
+            grid-template-columns: 1fr;
+        }
+
+        button {
+            font-size: 20px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>廚餘分類王：瀝乾大挑戰</h1>
+    <p>分對、瀝乾、投入正確桶子，成為校園惜食小英雄！</p>
+</header>
+
+<div class="container">
+
+    <section id="startScreen" class="panel start-screen">
+        <h2>遊戲任務說明</h2>
+        <p>
+            午餐後，廚餘不能亂倒喔！<br>
+            你要幫學校完成「生熟廚餘分類」與「瀝乾程序」。<br>
+            正確又快速可以獲得連擊加分、徽章和高分排行榜！
+        </p>
+
+        <div class="knowledge">
+            <h2>你需要記住三個重點：</h2>
+            <p>
+                <strong>一、生廚餘：</strong>沒有煮熟的果皮、菜葉、蔬果邊角料。<br>
+                <strong>二、熟廚餘：</strong>煮熟的飯菜、麵、肉、湯料，但要先瀝乾。<br>
+                <strong>三、瀝乾程序：</strong>先倒掉湯汁 → 夾出塑膠、衛生紙、筷子等異物 → 瀝乾 → 投入正確桶子。
+            </p>
+        </div>
+
+        <div class="mode-row">
+            <div class="mode-card">
+                <h3>初級挑戰</h3>
+                <p>90 秒，適合第一次練習。</p>
+                <button class="btn-green" onclick="startGame(90)">開始 90 秒</button>
+            </div>
+            <div class="mode-card">
+                <h3>班級競賽</h3>
+                <p>120 秒，題目較多，適合分組比賽。</p>
+                <button class="btn-orange" onclick="startGame(120)">開始 120 秒</button>
+            </div>
+            <div class="mode-card">
+                <h3>高手挑戰</h3>
+                <p>60 秒，速度與正確率大考驗。</p>
+                <button class="btn-red" onclick="startGame(60)">開始 60 秒</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="gameScreen" class="hidden">
+
+        <div class="panel score-board">
+            <div class="score-box">分數<span id="score">0</span></div>
+            <div class="score-box">時間<span id="time">120</span></div>
+            <div class="score-box">連擊<span id="combo">0</span></div>
+            <div class="score-box">關卡<span id="level">1</span></div>
+            <div class="score-box">答對<span id="correctCount">0</span></div>
+        </div>
+
+        <div class="game-area">
+            <div id="foodCard" class="panel card">
+                <div id="foodEmoji" class="food-emoji">🍌</div>
+                <div id="foodName" class="food-name">香蕉皮</div>
+                <div id="foodHint" class="food-hint">請判斷它該怎麼處理。</div>
+            </div>
+
+            <div class="panel">
+                <div id="stepTitle" class="step-title">第 1 步：請選擇廚餘分類</div>
+
+                <div id="choiceButtons" class="buttons"></div>
+
+                <div id="message" class="message">準備好了嗎？請開始分類！</div>
+
+                <div class="progress-area">
+                    <div class="progress-label">本題處理進度</div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>徽章收集區</h2>
+            <div class="badge-area">
+                <div id="badge1" class="badge">🌱 分類新手</div>
+                <div id="badge2" class="badge">💧 瀝乾達人</div>
+                <div id="badge3" class="badge">🔥 十連擊高手</div>
+                <div id="badge4" class="badge">🏆 廚餘分類王</div>
+                <div id="badge5" class="badge">🌍 永續小英雄</div>
+            </div>
+        </div>
+
+        <div class="panel knowledge">
+            <h2>小提醒</h2>
+            <p id="tipText">
+                熟廚餘如果含有湯汁，容易發臭，也會增加清運重量，所以一定要先瀝乾。
+            </p>
+        </div>
+
+    </section>
+
+    <section id="endScreen" class="panel hidden">
+        <h2>挑戰結束！</h2>
+        <p id="finalText" style="font-size:24px;font-weight:bold;"></p>
+        <button class="btn-green" onclick="restartGame()">再玩一次</button>
+        <button class="btn-blue" onclick="showStart()">回到說明</button>
+        <button class="btn-red" onclick="clearRanking()">清除排行榜</button>
+
+        <div class="ranking">
+            <h2>本機排行榜</h2>
+            <ol id="rankingList"></ol>
+        </div>
+    </section>
+
+</div>
+
+<script>
+const foods = [
+    // 生廚餘
+    {
+        name: "香蕉皮",
+        emoji: "🍌",
+        type: "raw",
+        needDrain: false,
+        hint: "沒有煮熟的水果皮，通常屬於生廚餘。",
+        tip: "果皮、菜葉、蔬果邊角料通常可以放入生廚餘桶。"
+    },
+    {
+        name: "高麗菜外葉",
+        emoji: "🥬",
+        type: "raw",
+        needDrain: false,
+        hint: "這是未烹煮的蔬菜葉。",
+        tip: "生菜葉若沒有塑膠袋、橡皮筋等異物，可以放入生廚餘。"
+    },
+    {
+        name: "蘋果核",
+        emoji: "🍎",
+        type: "raw",
+        needDrain: false,
+        hint: "水果吃完剩下的果核。",
+        tip: "水果皮、果核通常屬於生廚餘，但水果貼紙要先撕掉。"
+    },
+    {
+        name: "玉米葉",
+        emoji: "🌽",
+        type: "raw",
+        needDrain: false,
+        hint: "未烹煮的植物材料。",
+        tip: "玉米葉、菜葉、果皮都屬於常見的生廚餘。"
+    },
+    {
+        name: "西瓜皮",
+        emoji: "🍉",
+        type: "raw",
+        needDrain: false,
+        hint: "水果吃完後剩下的外皮。",
+        tip: "西瓜皮水分多，但仍屬於生廚餘，可先稍微瀝乾再投入。"
+    },
+    {
+        name: "橘子皮",
+        emoji: "🍊",
+        type: "raw",
+        needDrain: false,
+        hint: "沒有煮熟的水果皮。",
+        tip: "橘子皮、柳丁皮、檸檬皮都屬於生廚餘。"
+    },
+    {
+        name: "菜根菜梗",
+        emoji: "🥦",
+        type: "raw",
+        needDrain: false,
+        hint: "處理蔬菜時切下來的根部或梗。",
+        tip: "洗菜或備料剩下的菜根、菜梗屬於生廚餘。"
+    },
+    {
+        name: "鳳梨皮",
+        emoji: "🍍",
+        type: "raw",
+        needDrain: false,
+        hint: "水果削下來的外皮。",
+        tip: "鳳梨皮屬於生廚餘，但質地較硬，堆肥時可切小塊加速分解。"
+    },
+    {
+        name: "未煮過的地瓜皮",
+        emoji: "🍠",
+        type: "raw",
+        needDrain: false,
+        hint: "削皮時產生的生食材邊角料。",
+        tip: "未煮過的根莖類外皮通常屬於生廚餘。"
+    },
+    {
+        name: "豆芽菜殘葉",
+        emoji: "🌱",
+        type: "raw",
+        needDrain: false,
+        hint: "挑菜時剩下的未烹煮植物材料。",
+        tip: "豆芽菜殘葉、菜屑、蔬菜邊角料都可以歸入生廚餘。"
+    },
+    {
+        name: "花椰菜葉",
+        emoji: "🥦",
+        type: "raw",
+        needDrain: false,
+        hint: "料理前剝下的蔬菜葉。",
+        tip: "花椰菜葉如果沒有烹煮，屬於生廚餘。"
+    },
+    {
+        name: "芭樂籽和果皮",
+        emoji: "🍐",
+        type: "raw",
+        needDrain: false,
+        hint: "水果吃剩的籽和皮。",
+        tip: "水果籽、果皮大多屬於生廚餘，但包裝袋不可混入。"
+    },
+
+    // 熟廚餘
+    {
+        name: "剩飯",
+        emoji: "🍚",
+        type: "cooked",
+        needDrain: false,
+        hint: "已經煮熟的米飯。",
+        tip: "剩飯是熟廚餘，應避免混入塑膠袋、衛生紙或免洗餐具。"
+    },
+    {
+        name: "湯麵剩料",
+        emoji: "🍜",
+        type: "cooked",
+        needDrain: true,
+        hint: "有湯汁的熟食，不能直接倒進桶子。",
+        tip: "湯麵類要先把湯汁倒掉，再把固體食物瀝乾後投入熟廚餘桶。"
+    },
+    {
+        name: "滷肉飯剩菜",
+        emoji: "🍛",
+        type: "cooked",
+        needDrain: true,
+        hint: "油湯較多的熟食，需要瀝乾。",
+        tip: "含湯汁或油水的熟廚餘要瀝乾，減少臭味和重量。"
+    },
+    {
+        name: "雞骨頭",
+        emoji: "🍗",
+        type: "cooked",
+        needDrain: false,
+        hint: "吃完雞肉剩下的骨頭。",
+        tip: "骨頭通常算熟廚餘，但仍要依學校或清運單位規定處理。"
+    },
+    {
+        name: "咖哩飯剩菜",
+        emoji: "🍛",
+        type: "cooked",
+        needDrain: true,
+        hint: "有醬汁的熟食，需要先處理水分。",
+        tip: "醬汁太多容易讓廚餘桶變濕、發臭，所以要瀝乾。"
+    },
+    {
+        name: "剩下的炒青菜",
+        emoji: "🥬",
+        type: "cooked",
+        needDrain: true,
+        hint: "雖然是蔬菜，但已經煮熟了。",
+        tip: "煮熟的蔬菜屬於熟廚餘，若有湯汁或油水要先瀝乾。"
+    },
+    {
+        name: "魚骨魚刺",
+        emoji: "🐟",
+        type: "cooked",
+        needDrain: false,
+        hint: "吃完魚肉後剩下的骨刺。",
+        tip: "魚骨、魚刺多半歸為熟廚餘，但要注意不要混入塑膠包裝。"
+    },
+    {
+        name: "剩下的水餃",
+        emoji: "🥟",
+        type: "cooked",
+        needDrain: false,
+        hint: "已經煮熟的食物。",
+        tip: "水餃、包子、饅頭等熟食剩料通常屬於熟廚餘。"
+    },
+    {
+        name: "便當剩菜",
+        emoji: "🍱",
+        type: "cooked",
+        needDrain: true,
+        hint: "便當裡吃剩的飯菜，常有湯汁或醬汁。",
+        tip: "便當剩菜要先確認沒有橡皮筋、塑膠袋、餐具，再瀝乾投入。"
+    },
+    {
+        name: "剩湯裡的料",
+        emoji: "🥣",
+        type: "cooked",
+        needDrain: true,
+        hint: "湯汁不能直接倒入廚餘桶，但湯裡的料可以瀝乾後處理。",
+        tip: "湯汁應先倒掉，湯裡的菜、肉、豆腐等固體瀝乾後可放熟廚餘。"
+    },
+    {
+        name: "滷蛋殼與蛋白殘渣",
+        emoji: "🥚",
+        type: "cooked",
+        needDrain: false,
+        hint: "這是煮熟後剩下的食物殘渣。",
+        tip: "熟蛋殼、蛋白殘渣可視為熟廚餘，但要避免混入塑膠袋。"
+    },
+    {
+        name: "剩下的炒麵",
+        emoji: "🍝",
+        type: "cooked",
+        needDrain: true,
+        hint: "已經煮熟，而且可能有油水。",
+        tip: "炒麵、炒飯這類熟食若油水較多，最好先瀝乾再投入。"
+    },
+    {
+        name: "煮熟的玉米芯",
+        emoji: "🌽",
+        type: "cooked",
+        needDrain: false,
+        hint: "雖然是植物材料，但它已經煮熟了。",
+        tip: "煮熟的玉米芯屬於熟廚餘，若學校堆肥不易分解，可另行集中處理。"
+    },
+
+    // 不可丟廚餘
+    {
+        name: "塑膠湯匙",
+        emoji: "🥄",
+        type: "trash",
+        needDrain: false,
+        hint: "這不是食物，不能丟進廚餘桶。",
+        tip: "塑膠湯匙、吸管、塑膠袋都不是廚餘，要另外分類。"
+    },
+    {
+        name: "衛生紙",
+        emoji: "🧻",
+        type: "trash",
+        needDrain: false,
+        hint: "雖然常出現在餐後，但它不是廚餘。",
+        tip: "衛生紙不可混入廚餘，否則會影響後續處理。"
+    },
+    {
+        name: "飲料杯",
+        emoji: "🥤",
+        type: "trash",
+        needDrain: true,
+        hint: "不是廚餘，還可能有殘留液體。",
+        tip: "飲料杯要先倒掉液體，再依材質做資源回收或垃圾分類。"
+    },
+    {
+        name: "塑膠袋",
+        emoji: "🛍️",
+        type: "trash",
+        needDrain: false,
+        hint: "常常包著食物，但本身不是廚餘。",
+        tip: "塑膠袋不可丟入廚餘桶，要先把食物倒出來，再另外回收或丟垃圾。"
+    },
+    {
+        name: "竹筷",
+        emoji: "🥢",
+        type: "trash",
+        needDrain: false,
+        hint: "它是餐具，不是吃剩的食物。",
+        tip: "竹筷、免洗筷、牙籤都不可混入廚餘。"
+    },
+    {
+        name: "鋁箔包",
+        emoji: "🧃",
+        type: "trash",
+        needDrain: true,
+        hint: "裡面可能有飲料，但包裝不是廚餘。",
+        tip: "鋁箔包要先倒乾淨，再依學校規定回收。"
+    },
+    {
+        name: "橡皮筋",
+        emoji: "➰",
+        type: "trash",
+        needDrain: false,
+        hint: "常綁在便當或蔬菜上，但不能進廚餘桶。",
+        tip: "橡皮筋、綁繩、貼紙都屬於異物，要先挑出來。"
+    },
+    {
+        name: "水果貼紙",
+        emoji: "🏷️",
+        type: "trash",
+        needDrain: false,
+        hint: "雖然貼在水果上，但它不是食物。",
+        tip: "水果貼紙要先撕掉，避免混入生廚餘。"
+    },
+    {
+        name: "便當盒",
+        emoji: "🍱",
+        type: "trash",
+        needDrain: true,
+        hint: "裡面的剩菜可能是廚餘，但盒子不是。",
+        tip: "便當盒要先清空食物殘渣，再依材質回收或丟垃圾。"
+    },
+    {
+        name: "吸管",
+        emoji: "🥤",
+        type: "trash",
+        needDrain: false,
+        hint: "這是塑膠製品，不是食物。",
+        tip: "吸管不能丟進廚餘桶，應另外分類處理。"
+    },
+    {
+        name: "糖果包裝紙",
+        emoji: "🍬",
+        type: "trash",
+        needDrain: false,
+        hint: "包裝紙不是食物。",
+        tip: "糖果紙、餅乾袋、零食包裝都不能混入廚餘。"
+    },
+    {
+        name: "牛奶盒",
+        emoji: "🥛",
+        type: "trash",
+        needDrain: true,
+        hint: "裡面可能有殘留液體，但盒子不是廚餘。",
+        tip: "牛奶盒要先倒乾、沖洗後再依學校規定回收。"
+    }
+];
+
+let score = 0;
+let timeLeft = 120;
+let selectedDuration = 120;
+let combo = 0;
+let maxCombo = 0;
+let level = 1;
+let correctCount = 0;
+let currentFood = null;
+let currentStep = "classify";
+let timer = null;
+let processedDrain = false;
+let processedRemove = false;
+let usedFoods = [];
+
+const scoreEl = document.getElementById("score");
+const timeEl = document.getElementById("time");
+const comboEl = document.getElementById("combo");
+const levelEl = document.getElementById("level");
+const correctCountEl = document.getElementById("correctCount");
+const foodEmojiEl = document.getElementById("foodEmoji");
+const foodNameEl = document.getElementById("foodName");
+const foodHintEl = document.getElementById("foodHint");
+const choiceButtons = document.getElementById("choiceButtons");
+const stepTitle = document.getElementById("stepTitle");
+const messageEl = document.getElementById("message");
+const progressFill = document.getElementById("progressFill");
+const tipText = document.getElementById("tipText");
+const foodCard = document.getElementById("foodCard");
+
+function startGame(duration) {
+    selectedDuration = duration || selectedDuration || 120;
+
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+
+    score = 0;
+    timeLeft = selectedDuration;
+    combo = 0;
+    maxCombo = 0;
+    level = 1;
+    correctCount = 0;
+    usedFoods = [];
+
+    resetBadges();
+    updateBoard();
+    nextFood();
+
+    clearInterval(timer);
+    timer = setInterval(() => {
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            endGame();
+        }
+    }, 1000);
+}
+
+function restartGame() {
+    startGame(selectedDuration);
+}
+
+function showStart() {
+    clearInterval(timer);
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.add("hidden");
+    document.getElementById("startScreen").classList.remove("hidden");
+}
+
+function nextFood() {
+    if (usedFoods.length === foods.length) {
+        usedFoods = [];
+    }
+
+    let available = foods.filter(f => !usedFoods.includes(f.name));
+    currentFood = available[Math.floor(Math.random() * available.length)];
+    usedFoods.push(currentFood.name);
+
+    currentStep = "classify";
+    processedDrain = false;
+    processedRemove = false;
+
+    foodEmojiEl.textContent = currentFood.emoji;
+    foodNameEl.textContent = currentFood.name;
+    foodHintEl.textContent = currentFood.hint;
+    tipText.textContent = currentFood.tip;
+    progressFill.style.width = "0%";
+
+    setMessage("請判斷這項物品要放到哪裡。");
+    showClassifyButtons();
+}
+
+function showClassifyButtons() {
+    stepTitle.textContent = "第 1 步：請選擇正確分類";
+    choiceButtons.innerHTML = `
+        <button class="btn-green" onclick="chooseType('raw')">生廚餘桶<br>🥬 果皮菜葉</button>
+        <button class="btn-orange" onclick="chooseType('cooked')">熟廚餘桶<br>🍚 飯菜骨頭</button>
+        <button class="btn-gray" onclick="chooseType('trash')">不可丟廚餘<br>🗑️ 異物垃圾</button>
+        <button class="btn-blue" onclick="useHint()">小提示<br>💡 扣 5 分</button>
+    `;
+}
+
+function chooseType(type) {
+    if (type === currentFood.type) {
+        addScore(10);
+        progressFill.style.width = "35%";
+
+        if (currentFood.needDrain) {
+            currentStep = "procedure";
+            setMessage("分類正確！但這一項還需要完成瀝乾或去除異物程序。");
+            showProcedureButtons();
+        } else {
+            completeFood("分類正確！處理完成！");
+        }
+    } else {
+        wrongAnswer(getCorrectTypeText());
+    }
+}
+
+function showProcedureButtons() {
+    stepTitle.textContent = "第 2 步：請完成正確處理程序";
+    choiceButtons.innerHTML = `
+        <button class="btn-blue" onclick="doProcedure('drain')">先瀝乾<br>💧 去除水分</button>
+        <button class="btn-yellow" onclick="doProcedure('remove')">夾出異物<br>🥢 塑膠、紙類</button>
+        <button class="btn-red" onclick="doProcedure('direct')">直接倒入桶中<br>⚠️ 快速處理</button>
+        <button class="btn-green" onclick="doProcedure('finish')">完成投入<br>✅ 放入正確桶</button>
+    `;
+}
+
+function doProcedure(action) {
+    if (action === "direct") {
+        wrongAnswer("不能直接倒入！有湯汁或異物時，要先處理再投入。");
+        return;
+    }
+
+    if (action === "drain") {
+        if (!processedDrain) {
+            processedDrain = true;
+            addScore(8);
+            progressFill.style.width = processedRemove ? "80%" : "60%";
+            setMessage("很好！先瀝乾，廚餘桶才不會太濕、發臭。");
+        } else {
+            setMessage("已經瀝乾過囉，接著檢查是否有異物。");
+        }
+        return;
+    }
+
+    if (action === "remove") {
+        if (!processedRemove) {
+            processedRemove = true;
+            addScore(8);
+            progressFill.style.width = processedDrain ? "80%" : "60%";
+            setMessage("很棒！塑膠、紙類、免洗餐具都不能混入廚餘。");
+        } else {
+            setMessage("異物已經檢查過囉，可以準備投入。");
+        }
+        return;
+    }
+
+    if (action === "finish") {
+        if (processedDrain && processedRemove) {
+            completeFood("程序正確！你完成了瀝乾與分類！");
+        } else if (!processedDrain && !processedRemove) {
+            wrongAnswer("還沒瀝乾，也還沒檢查異物喔！");
+        } else if (!processedDrain) {
+            wrongAnswer("還沒有瀝乾，湯汁太多容易發臭！");
+        } else if (!processedRemove) {
+            wrongAnswer("還沒有檢查異物，塑膠或紙類不能混入廚餘！");
+        }
+    }
+}
+
+function completeFood(text) {
+    combo++;
+    if (combo > maxCombo) {
+        maxCombo = combo;
+    }
+    correctCount++;
+
+    let bonus = 15;
+
+    if (combo >= 3) {
+        bonus += 5;
+    }
+
+    if (combo >= 5) {
+        bonus += 10;
+    }
+
+    if (combo >= 10) {
+        bonus += 20;
+    }
+
+    addScore(bonus);
+
+    progressFill.style.width = "100%";
+    setMessage(text + " 連擊 +" + combo + "，加分 +" + bonus + "！");
+    foodCard.classList.add("pop");
+
+    setTimeout(() => {
+        foodCard.classList.remove("pop");
+        updateLevelAndBadges();
+        nextFood();
+    }, 850);
+
+    updateBoard();
+}
+
+function wrongAnswer(reason) {
+    combo = 0;
+    score = Math.max(0, score - 5);
+    setMessage("哎呀！答錯了。 " + reason + " 扣 5 分，連擊歸零。");
+    foodCard.classList.add("shake");
+
+    setTimeout(() => {
+        foodCard.classList.remove("shake");
+    }, 400);
+
+    updateBoard();
+}
+
+function addScore(points) {
+    score += points;
+    updateBoard();
+}
+
+function updateBoard() {
+    scoreEl.textContent = score;
+    timeEl.textContent = timeLeft;
+    comboEl.textContent = combo;
+    levelEl.textContent = level;
+    correctCountEl.textContent = correctCount;
+}
+
+function resetBadges() {
+    const badges = document.querySelectorAll(".badge");
+    badges.forEach(badge => badge.classList.remove("active"));
+}
+
+function updateLevelAndBadges() {
+    if (correctCount >= 5) {
+        level = 2;
+    }
+    if (correctCount >= 10) {
+        level = 3;
+    }
+    if (correctCount >= 18) {
+        level = 4;
+    }
+    if (correctCount >= 25) {
+        level = 5;
+    }
+
+    if (correctCount >= 3) {
+        document.getElementById("badge1").classList.add("active");
+    }
+
+    if (score >= 120) {
+        document.getElementById("badge2").classList.add("active");
+    }
+
+    if (maxCombo >= 10) {
+        document.getElementById("badge3").classList.add("active");
+    }
+
+    if (score >= 250) {
+        document.getElementById("badge4").classList.add("active");
+    }
+
+    if (score >= 400) {
+        document.getElementById("badge5").classList.add("active");
+    }
+
+    updateBoard();
+}
+
+function useHint() {
+    setMessage("小提示：" + currentFood.hint);
+    score = Math.max(0, score - 5);
+    updateBoard();
+}
+
+function setMessage(text) {
+    messageEl.textContent = text;
+}
+
+function getCorrectTypeText() {
+    if (currentFood.type === "raw") {
+        return "正確答案是：生廚餘。像果皮、菜葉、未烹煮蔬果通常屬於生廚餘。";
+    }
+
+    if (currentFood.type === "cooked") {
+        return "正確答案是：熟廚餘。煮熟的飯菜、骨頭、熟食剩料屬於熟廚餘。";
+    }
+
+    return "正確答案是：不可丟入廚餘。塑膠、紙類、餐具、飲料杯都不能混進廚餘桶。";
+}
+
+function endGame() {
+    clearInterval(timer);
+
+    document.getElementById("gameScreen").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+
+    let title = "";
+
+    if (score >= 400) {
+        title = "🌍 永續小英雄";
+    } else if (score >= 250) {
+        title = "🏆 廚餘分類王";
+    } else if (score >= 150) {
+        title = "💧 瀝乾達人";
+    } else if (score >= 80) {
+        title = "🌱 分類新手";
+    } else {
+        title = "📘 練習中的惜食小幫手";
+    }
+
+    document.getElementById("finalText").innerHTML = `
+        你的總分是 ${score} 分！<br>
+        答對 ${correctCount} 題，最高連擊 ${maxCombo}。<br>
+        獲得稱號：${title}
+    `;
+
+    saveRanking(score, title);
+    showRanking();
+}
+
+function saveRanking(finalScore, title) {
+    let rankings = JSON.parse(localStorage.getItem("foodWasteRankings") || "[]");
+
+    let name = prompt("請輸入你的隊名或暱稱：", "惜食小隊");
+
+    if (!name || name.trim() === "") {
+        name = "惜食小隊";
+    }
+
+    rankings.push({
+        name: name.trim(),
+        score: finalScore,
+        title: title,
+        duration: selectedDuration,
+        correct: correctCount,
+        maxCombo: maxCombo,
+        date: new Date().toLocaleDateString()
+    });
+
+    rankings.sort((a, b) => b.score - a.score);
+    rankings = rankings.slice(0, 10);
+
+    localStorage.setItem("foodWasteRankings", JSON.stringify(rankings));
+}
+
+function showRanking() {
+    let rankings = JSON.parse(localStorage.getItem("foodWasteRankings") || "[]");
+    let rankingList = document.getElementById("rankingList");
+    rankingList.innerHTML = "";
+
+    if (rankings.length === 0) {
+        rankingList.innerHTML = "<li>目前還沒有紀錄</li>";
+        return;
+    }
+
+    rankings.forEach(item => {
+        let li = document.createElement("li");
+        li.textContent = `${item.name}：${item.score} 分｜${item.title}｜${item.duration || 120} 秒｜答對 ${item.correct || 0} 題｜最高連擊 ${item.maxCombo || 0}｜${item.date}`;
+        rankingList.appendChild(li);
+    });
+}
+
+function clearRanking() {
+    if (confirm("確定要清除本機排行榜嗎？")) {
+        localStorage.removeItem("foodWasteRankings");
+        showRanking();
+    }
+}
+</script>
+
+</body>
+</html>
