@@ -319,7 +319,7 @@
         <tbody id="rankBody"></tbody>
       </table>
       <p class="mini-note">
-        加分祕訣：答對越快、連擊越高，分數越多。每完成一個正確程序會得到知識星，集滿可解鎖「堆肥大師」。
+        加分祕訣：一次完成第 1～5 關就會結算。答對越多、連擊越高，分數越多；完成基本觀念即可獲得知識星。
       </p>
       <hr>
       <h2 style="color:#2e7d32;">🧠 堆肥口訣</h2>
@@ -339,9 +339,9 @@
       <li><b>學程序：</b>依照「切小 → 混乾 → 保濕 → 通風 → 等待熟成」完成簡化流程，遊戲會給提示。</li>
       <li><b>調配方：</b>綠色材料和棕色材料要平衡，避免太臭、太濕或分解太慢。</li>
       <li><b>救堆肥：</b>依狀況選擇補乾料、加水、翻堆或等待熟成。</li>
-      <li><b>知識快問快答：</b>答對可以獲得大量加分。</li>
+      <li><b>最後知識搶答：</b>從實用題庫抽題，例如太濕、長蟲、放錯材料、堆肥何時可用等問題。</li>
     </ol>
-    <p><b>競賽加分：</b>答對 +100，連擊加成 +20、+40、+60……；快答可加時間獎勵；答錯會扣生命。生命歸零或時間歸零即結算。</p>
+    <p><b>競賽加分：</b>每個關卡只挑戰一次，完成第 1～5 關後直接結算。答對可加分與累積連擊；答錯會有提示，部分關卡才會扣生命。</p>
     <button class="btn" onclick="document.getElementById('rulesModal').classList.remove('show')">我知道了</button>
   </div>
 </div>
@@ -380,8 +380,21 @@ const problems=[
   {text:"堆肥聞起來很臭、表面濕黏，該怎麼做？", choices:["加入落葉或碎紙並翻堆","再倒一大桶水","加入更多魚骨","完全密封不理它"], ans:0, explain:"臭味通常代表太濕或缺氧，要加棕色乾料並翻堆通風。"},
   {text:"堆肥很乾，材料幾乎沒有分解，該怎麼辦？", choices:["少量噴水並混合","加入塑膠袋","拿去太陽下烤更乾","停止翻堆"], ans:0, explain:"太乾會讓微生物活動變慢，要少量補水到像擰乾海綿。"},
   {text:"看到很多小果蠅在廚餘附近，最好怎麼處理？", choices:["用乾葉或土覆蓋廚餘","加入更多水果皮在表面","把蓋子打開一整天","加很多鹽巴"], ans:0, explain:"新鮮廚餘不要裸露，覆蓋棕色材料可減少蟲和味道。"},
-  {text:"哪一種狀態最接近合適濕度？", choices:["像擰乾的海綿","像湯一樣流動","像沙漠一樣乾","結成硬石頭"], ans:0, explain:"合適堆肥濕度摸起來微濕，但不會滴水。"},
-  {text:"為什麼要把廚餘切小？", choices:["增加接觸面積，分解更快","讓它變得更臭","讓塑膠也能分解","只是為了好看"], ans:0, explain:"切小能讓微生物更容易分解材料。"}
+  {text:"堆肥桶裡出現白白的菌絲，應該怎麼辦？", choices:["通常是分解中的正常現象，觀察即可","立刻全部丟掉","加入漂白水消毒","把所有材料曬到完全乾"], ans:0, explain:"白色菌絲常是微生物分解的跡象，只要沒有嚴重臭味，可以繼續觀察與維持通風。"},
+  {text:"堆肥分解速度很慢，可能需要先檢查什麼？", choices:["材料是否太大塊、太乾或缺少翻堆","是不是放太多玻璃瓶","是不是太常看它","是不是顏色不夠漂亮"], ans:0, explain:"分解慢常和材料太大、太乾或缺氧有關，可切小、補水或翻堆。"}
+];
+
+const quizQuestions=[
+  {text:"學校午餐後剩下的青菜湯湯水水很多，放進堆肥桶前最好先怎麼做？", choices:["先瀝乾，再和落葉或碎紙混合","直接整鍋倒入","加糖讓它發酵","放進塑膠袋再丟入"], ans:0, explain:"太多湯水會讓堆肥太濕、容易發臭，先瀝乾並搭配乾材料比較好。"},
+  {text:"如果不小心把一點點塑膠包裝丟進堆肥桶，最好的處理方式是什麼？", choices:["盡快夾出來，放到正確回收或垃圾處理","埋深一點就會分解","多加水讓它融化","用剪刀剪小讓它變堆肥"], ans:0, explain:"塑膠不會變成堆肥，發現後要移除，避免混入土壤。"},
+  {text:"堆肥完成後，什麼狀態比較適合拿去種植物？", choices:["顏色變深、味道像泥土、看不太出原本食物","還看得到新鮮菜葉和果皮","聞起來像壞掉的食物","摸起來像一灘爛泥"], ans:0, explain:"成熟堆肥通常顏色深、味道接近土壤，原本材料大多已分解。"},
+  {text:"堆肥桶下雨後變得很濕，最實用的改善方法是什麼？", choices:["加乾落葉或碎紙，並注意遮雨","再倒水沖一沖","加入更多濕廚餘","完全不要翻動"], ans:0, explain:"雨水太多會造成過濕，可加乾材料吸水，並讓堆肥桶有遮雨設計。"},
+  {text:"為什麼不建議把肉、魚骨、油炸食物放入學校生廚餘堆肥？", choices:["容易發臭、吸引動物，也較難管理","因為它們完全沒有重量","因為它們會讓落葉變透明","因為它們一定會長成蔬菜"], ans:0, explain:"校園堆肥重點是簡單、安全、好管理，肉類和油膩食物容易造成臭味與動物問題。"},
+  {text:"如果班上每天都有少量果皮，最好的做法是哪一個？", choices:["少量分次加入，每次都覆蓋乾材料","一次堆在最上面不用蓋","只加果皮不加落葉","全部倒水打成汁"], ans:0, explain:"少量分次加入並覆蓋乾材料，可減少臭味、果蠅，也比較容易分解。"},
+  {text:"堆肥區附近如果有螞蟻變多，可能代表什麼狀況？", choices:["表面可能有甜果皮裸露，需覆蓋乾材料","代表堆肥一定成功了","代表水加太多所以螞蟻來游泳","代表要加入鹽巴"], ans:0, explain:"甜果皮裸露容易吸引螞蟻或小蟲，可用落葉、碎紙或薄土覆蓋。"},
+  {text:"翻堆時最重要的安全提醒是什麼？", choices:["戴手套或使用工具，翻完要洗手","用手直接抓完再吃東西","把臉靠很近聞味道","把堆肥灑在同學身上"], ans:0, explain:"堆肥是自然分解材料，操作時要注意衛生與安全。"},
+  {text:"如果堆肥桶裡材料太滿，最好的管理方式是什麼？", choices:["暫停加入新廚餘，先讓原本材料分解下降","用力壓到完全沒有空氣","繼續每天加到溢出","加入更多湯水讓它變小"], ans:0, explain:"太滿會不通風、難翻動，應暫停加入或分桶處理。"},
+  {text:"使用堆肥種菜時，哪一種做法比較合適？", choices:["和土壤混合使用，不要整盆只放未熟堆肥","直接把未熟廚餘埋在菜苗根旁","把塑膠一起混進土裡","用堆肥取代所有澆水"], ans:0, explain:"成熟堆肥可和土壤混合改善土質；未熟堆肥靠近根部可能影響植物生長。"}
 ];
 
 function $(id){return document.getElementById(id)}
@@ -447,7 +460,10 @@ function resetAll(){
 }
 function nextLevel(){
   level++;
-  if(level>5) level=2+Math.floor(Math.random()*4);
+  if(level>5){
+    endGame(true);
+    return;
+  }
   renderLevel();
   updateUI();
 }
@@ -615,20 +631,29 @@ function answerProblem(i){
   if(i===p.ans){
     combo++; stars+=2; markBadge("badge-water"); markBadge("badge-air"); addScore(280); timeLeft+=6;
     setFeedback(`✅ ${p.explain}`,"good");
-    setTimeout(nextLevel,900);
+    if(level>=5){
+      setTimeout(()=>endGame(true),900);
+    }else{
+      setTimeout(nextLevel,900);
+    }
   }else{
     wrong(`不是最佳處理。提示：${p.explain}`);
   }
   updateUI();
 }
 function renderQuiz(){
-  $("stageTitle").textContent="第 5 關：堆肥知識搶答賽";
-  $("instruction").innerHTML="選出最正確答案。這關會隨機出題，適合班級分組競賽。";
-  renderRescue();
-  $("stageTitle").textContent="第 5 關：堆肥知識搶答賽";
+  $("stageTitle").textContent="第 5 關：最後知識搶答";
+  $("instruction").innerHTML="最後一題會從實用題庫中抽出，不會和前一關完全重複。答完後就會結算總分。";
+  const p=quizQuestions[Math.floor(Math.random()*quizQuestions.length)];
+  window.currentProblem=p;
+  $("gameArea").innerHTML=`
+    <div class="pile"><div class="big">🧠</div><h2>${p.text}</h2></div>
+    <div class="quiz-options" style="margin-top:14px;">
+    ${p.choices.map((c,i)=>`<button class="btn secondary" onclick="answerProblem(${i})">${c}</button>`).join("")}
+    </div>`;
 }
 function markBadge(id){$(id).classList.add("on");}
-function endGame(){
+function endGame(completed=false){
   clearInterval(timer);
   started=false;
   $("startBtn").textContent="再玩一次";
@@ -636,16 +661,20 @@ function endGame(){
   if(score>best)localStorage.setItem(bestKey,score);
   saveRank(score);
   renderRanks();
-  const title=score>=2200?"🌟 超級堆肥大師":score>=1500?"🏆 堆肥高手":score>=900?"🌱 循環小勇士":"🍂 堆肥見習生";
+  const title=score>=1800?"🌟 超級堆肥大師":score>=1200?"🏆 堆肥高手":score>=700?"🌱 循環小勇士":"🍂 堆肥見習生";
+  const endMessage = completed
+    ? "恭喜完成一次完整關卡挑戰！你已經認識生廚餘堆肥的基本流程。"
+    : "挑戰結束！可以再玩一次，或請下一組挑戰。";
   $("gameArea").innerHTML=`
     <div class="pile">
       <div class="big">🎉</div>
       <h2>${title}</h2>
       <p>你的分數：${score}</p>
       <p>獲得知識星：${stars}</p>
-      <p>學會重點：生廚餘要瀝乾切小、搭配棕色乾料、保持微濕、定期翻堆。</p>
+      <p>完成內容：材料分類 → 五步驟提示挑戰 → 簡易配方 → 狀況判斷 → 實用知識搶答。</p>
+      <p>學會重點：切小、混乾、保濕、通風、等待熟成。</p>
     </div>`;
-  setFeedback("遊戲結束！可以請下一組挑戰，看看誰能拿到最高分。","info");
+  setFeedback(endMessage,"info");
   updateUI();
 }
 function saveRank(s){
@@ -669,7 +698,7 @@ function showRules(){ $("rulesModal").classList.add("show");}
 function closeRules(e){ if(e.target.id==="rulesModal") $("rulesModal").classList.remove("show");}
 renderRanks();
 updateUI();
-$("instruction").innerHTML="按下開始後，請在時間內完成材料分類、五步驟提示挑戰、簡易配方調整與知識搶答。適合投影到大螢幕進行小組競賽。";
+$("instruction").innerHTML="按下開始後，依序完成 5 個關卡各一次：材料分類、五步驟提示挑戰、簡易配方調整、狀況判斷與知識搶答。適合投影到大螢幕進行小組競賽。";
 </script>
 </body>
 </html>
